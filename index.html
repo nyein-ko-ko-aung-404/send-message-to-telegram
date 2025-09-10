@@ -28,7 +28,7 @@
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             width: 100%;
-            max-width: 650px;
+            max-width: 700px;
             overflow: hidden;
         }
         
@@ -65,7 +65,7 @@
             font-size: 16px;
         }
         
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 14px 18px;
             border: 1px solid #ddd;
@@ -74,7 +74,7 @@
             transition: all 0.3s;
         }
         
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #6e8efb;
             box-shadow: 0 0 0 3px rgba(110, 142, 251, 0.2);
@@ -135,6 +135,131 @@
         .tag:hover {
             background-color: #dee2e6;
             transform: translateY(-2px);
+        }
+        
+        .media-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .media-option {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .media-option h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-input-container {
+            position: relative;
+            margin-top: 15px;
+        }
+        
+        .file-input-container input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-label {
+            display: block;
+            padding: 12px 20px;
+            background: linear-gradient(90deg, #4776E6, #8E54E9);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-input-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .file-name {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #FF9800;
+        }
+        
+        .toggle-label {
+            font-weight: 600;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
         
         .submit-btn {
@@ -217,8 +342,8 @@
             left: 10px;
         }
         
-        @media (max-width: 600px) {
-            .buttons-container {
+        @media (max-width: 768px) {
+            .buttons-container, .media-options {
                 grid-template-columns: 1fr;
             }
             
@@ -236,7 +361,7 @@
     <div class="container">
         <div class="header">
             <h1><i class="fab fa-telegram"></i> Telegram Message Sender</h1>
-            <p>Send HTML formatted messages with inline buttons to Telegram</p>
+            <p>Send messages, media files, and documents to Telegram with HTML formatting</p>
         </div>
         
         <div class="form-container">
@@ -267,6 +392,42 @@
                 </div>
             </div>
             
+            <div class="media-options">
+                <div class="media-option">
+                    <h3><i class="fas fa-file-image"></i> Send Photo</h3>
+                    <p>Select an image to send</p>
+                    <div class="file-input-container">
+                        <label class="file-input-label">
+                            <i class="fas fa-upload"></i> Choose Image
+                        </label>
+                        <input type="file" id="photoFile" accept="image/*">
+                        <div class="file-name" id="photoFileName">No file chosen</div>
+                    </div>
+                </div>
+                
+                <div class="media-option">
+                    <h3><i class="fas fa-file-alt"></i> Send Document</h3>
+                    <p>Select a document to send</p>
+                    <div class="file-input-container">
+                        <label class="file-input-label">
+                            <i class="fas fa-upload"></i> Choose Document
+                        </label>
+                        <input type="file" id="documentFile">
+                        <div class="file-name" id="documentFileName">No file chosen</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toggle-container">
+                <div class="toggle-label">
+                    <i class="fas fa-eye"></i> Disable Web Page Preview
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="disableWebPreview">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
             <div class="buttons-container">
                 <div class="button-input">
                     <label for="button1"><i class="fas fa-square"></i> Button 1 Text</label>
@@ -290,13 +451,37 @@
                     <li>Get your bot token from <a href="https://t.me/BotFather" target="_blank">@BotFather</a></li>
                     <li>Find your chat ID using bots like <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a></li>
                     <li>Use the HTML tags to format your message (Telegram supports a subset of HTML)</li>
-                    <li>Buttons will be displayed as inline buttons in your message</li>
+                    <li>You can send photos, documents, or just text messages</li>
+                    <li>Toggle "Disable Web Page Preview" to prevent link previews</li>
                 </ul>
             </div>
         </div>
     </div>
 
     <script>
+        // Set up file input event listeners
+        document.getElementById('photoFile').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+            document.getElementById('photoFileName').textContent = fileName;
+            
+            // Clear document file if both are selected
+            if (e.target.files[0] && document.getElementById('documentFile').files[0]) {
+                document.getElementById('documentFile').value = '';
+                document.getElementById('documentFileName').textContent = 'No file chosen';
+            }
+        });
+        
+        document.getElementById('documentFile').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+            document.getElementById('documentFileName').textContent = fileName;
+            
+            // Clear photo file if both are selected
+            if (e.target.files[0] && document.getElementById('photoFile').files[0]) {
+                document.getElementById('photoFile').value = '';
+                document.getElementById('photoFileName').textContent = 'No file chosen';
+            }
+        });
+        
         function insertTag(openTag, closeTag) {
             const messageField = document.getElementById('message');
             const startPos = messageField.selectionStart;
@@ -319,6 +504,9 @@
             const message = document.getElementById('message').value.trim();
             const button1Text = document.getElementById('button1').value.trim();
             const button2Text = document.getElementById('button2').value.trim();
+            const disableWebPreview = document.getElementById('disableWebPreview').checked;
+            const photoFile = document.getElementById('photoFile').files[0];
+            const documentFile = document.getElementById('documentFile').files[0];
             
             // Validate inputs
             if (!botToken) {
@@ -331,8 +519,14 @@
                 return;
             }
             
-            if (!message) {
-                showResponse('Please enter a message', false);
+            if (!message && !photoFile && !documentFile) {
+                showResponse('Please enter a message or select a file to send', false);
+                return;
+            }
+            
+            // Check if both photo and document are selected
+            if (photoFile && documentFile) {
+                showResponse('Please select only one file type (photo or document)', false);
                 return;
             }
             
@@ -363,22 +557,44 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             submitBtn.disabled = true;
             
-            // Send message to Telegram
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            // Determine which API endpoint to use
+            let apiEndpoint, formData;
             
-            const payload = {
-                chat_id: chatId,
-                text: message,
-                parse_mode: 'HTML',
-                reply_markup: replyMarkup
-            };
+            if (photoFile) {
+                // Send photo
+                apiEndpoint = `https://api.telegram.org/bot${botToken}/sendPhoto`;
+                formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('photo', photoFile);
+                if (message) formData.append('caption', message);
+                formData.append('parse_mode', 'HTML');
+                if (disableWebPreview) formData.append('disable_web_page_preview', 'true');
+                if (replyMarkup) formData.append('reply_markup', JSON.stringify(replyMarkup));
+            } else if (documentFile) {
+                // Send document
+                apiEndpoint = `https://api.telegram.org/bot${botToken}/sendDocument`;
+                formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('document', documentFile);
+                if (message) formData.append('caption', message);
+                formData.append('parse_mode', 'HTML');
+                if (disableWebPreview) formData.append('disable_web_page_preview', 'true');
+                if (replyMarkup) formData.append('reply_markup', JSON.stringify(replyMarkup));
+            } else {
+                // Send text message
+                apiEndpoint = `https://api.telegram.org/bot${botToken}/sendMessage`;
+                formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('text', message);
+                formData.append('parse_mode', 'HTML');
+                formData.append('disable_web_page_preview', disableWebPreview.toString());
+                if (replyMarkup) formData.append('reply_markup', JSON.stringify(replyMarkup));
+            }
             
-            fetch(url, {
+            // Send request to Telegram
+            fetch(apiEndpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
+                body: formData
             })
             .then(response => response.json())
             .then(data => {
@@ -388,6 +604,10 @@
                     document.getElementById('message').value = '';
                     document.getElementById('button1').value = '';
                     document.getElementById('button2').value = '';
+                    document.getElementById('photoFile').value = '';
+                    document.getElementById('documentFile').value = '';
+                    document.getElementById('photoFileName').textContent = 'No file chosen';
+                    document.getElementById('documentFileName').textContent = 'No file chosen';
                 } else {
                     showResponse(`Error: ${data.description}`, false);
                 }
