@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Message Sender</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #4776E6, #8E54E9);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .form-container {
+            padding: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #6e8efb;
+            box-shadow: 0 0 0 2px rgba(110, 142, 251, 0.2);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .buttons-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .button-input {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .html-tags {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .html-tags h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #444;
+        }
+        
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tag {
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .tag:hover {
+            background-color: #dee2e6;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(90deg, #4776E6, #8E54E9);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 600px) {
+            .buttons-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Telegram Message Sender</h1>
+            <p>Send HTML formatted messages with inline buttons to Telegram</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="input-group">
+                <label for="botToken">Bot Token</label>
+                <input type="text" id="botToken" placeholder="Enter your Telegram bot token">
+            </div>
+            
+            <div class="input-group">
+                <label for="chatId">Chat ID</label>
+                <input type="text" id="chatId" placeholder="Enter your Telegram chat ID">
+            </div>
+            
+            <div class="input-group">
+                <label for="message">Message (HTML formatted)</label>
+                <textarea id="message" placeholder="Enter your message here..."></textarea>
+            </div>
+            
+            <div class="html-tags">
+                <h3>Available HTML Tags (Click to insert)</h3>
+                <div class="tags-list">
+                    <span class="tag" onclick="insertTag('<b>', '</b>')">&lt;b&gt;Bold&lt;/b&gt;</span>
+                    <span class="tag" onclick="insertTag('<i>', '</i>')">&lt;i&gt;Italic&lt;/i&gt;</span>
+                    <span class="tag" onclick="insertTag('<u>', '</u>')">&lt;u&gt;Underline&lt;/u&gt;</span>
+                    <span class="tag" onclick="insertTag('<code>', '</code>')">&lt;code&gt;Code&lt;/code&gt;</span>
+                    <span class="tag" onclick="insertTag('<pre>', '</pre>')">&lt;pre&gt;Preformatted&lt;/pre&gt;</span>
+                    <span class="tag" onclick="insertTag('<a href=\"URL\">', '</a>')">&lt;a&gt;Link&lt;/a&gt;</span>
+                </div>
+            </div>
+            
+            <div class="buttons-container">
+                <div class="button-input">
+                    <label for="button1">Button 1 Text</label>
+                    <input type="text" id="button1" placeholder="Button 1 text">
+                </div>
+                <div class="button-input">
+                    <label for="button2">Button 2 Text</label>
+                    <input type="text" id="button2" placeholder="Button 2 text">
+                </div>
+            </div>
+            
+            <button class="submit-btn" onclick="sendMessage()">Send Message to Telegram</button>
+            
+            <div id="response" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        function insertTag(openTag, closeTag) {
+            const messageField = document.getElementById('message');
+            const startPos = messageField.selectionStart;
+            const endPos = messageField.selectionEnd;
+            const selectedText = messageField.value.substring(startPos, endPos);
+            
+            messageField.value = messageField.value.substring(0, startPos) + 
+                                openTag + selectedText + closeTag + 
+                                messageField.value.substring(endPos, messageField.value.length);
+            
+            // Set cursor position after the inserted tags
+            messageField.focus();
+            messageField.selectionStart = startPos + openTag.length;
+            messageField.selectionEnd = startPos + openTag.length;
+        }
+        
+        function sendMessage() {
+            const botToken = document.getElementById('botToken').value.trim();
+            const chatId = document.getElementById('chatId').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const button1Text = document.getElementById('button1').value.trim();
+            const button2Text = document.getElementById('button2').value.trim();
+            
+            // Validate inputs
+            if (!botToken) {
+                showResponse('Please enter your bot token', false);
+                return;
+            }
+            
+            if (!chatId) {
+                showResponse('Please enter your chat ID', false);
+                return;
+            }
+            
+            if (!message) {
+                showResponse('Please enter a message', false);
+                return;
+            }
+            
+            // Prepare inline keyboard if buttons are provided
+            let replyMarkup = null;
+            if (button1Text || button2Text) {
+                const keyboard = [];
+                
+                if (button1Text && button2Text) {
+                    keyboard.push([{ text: button1Text }, { text: button2Text }]);
+                } else if (button1Text) {
+                    keyboard.push([{ text: button1Text }]);
+                } else if (button2Text) {
+                    keyboard.push([{ text: button2Text }]);
+                }
+                
+                replyMarkup = JSON.stringify({
+                    inline_keyboard: keyboard
+                });
+            }
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            // Send message to Telegram
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            
+            const formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('text', message);
+            formData.append('parse_mode', 'HTML');
+            if (replyMarkup) {
+                formData.append('reply_markup', replyMarkup);
+            }
+            
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    showResponse('Message sent successfully!', true);
+                    // Clear form
+                    document.getElementById('message').value = '';
+                    document.getElementById('button1').value = '';
+                    document.getElementById('button2').value = '';
+                } else {
+                    showResponse(`Error: ${data.description}`, false);
+                }
+            })
+            .catch(error => {
+                showResponse(`Error: ${error.message}`, false);
+            })
+            .finally(() => {
+                submitBtn.textContent = 'Send Message to Telegram';
+                submitBtn.disabled = false;
+            });
+        }
+        
+        function showResponse(message, isSuccess) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = message;
+            responseDiv.className = isSuccess ? 'response success' : 'response error';
+            responseDiv.style.display = 'block';
+            
+            // Hide response after 5 seconds
+            setTimeout(() => {
+                responseDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
